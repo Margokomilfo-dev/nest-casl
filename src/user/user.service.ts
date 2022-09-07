@@ -20,7 +20,7 @@ export class UserService {
   findOne(id: number) {
     const user = new User();
     user.id = id;
-    user.name = 'Mia';
+    user.orgId = 2;
     return user;
   }
 

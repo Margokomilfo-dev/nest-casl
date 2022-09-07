@@ -19,18 +19,22 @@ export class AbilityFactory {
     );
 
     if (user.isAdmin) {
-      can(ActionsEnum.Manage, User); //can do everything
-      cannot(ActionsEnum.Manage, User, { name: { $ne: 'Margo' } }).because(
-        'this function can do Margo and Admins =)',
+      can(ActionsEnum.Manage, 'all');
+      cannot(ActionsEnum.Manage, User, { orgId: { $ne: user.orgId } }).because(
+        'You can only manage users in your own organization',
       );
     } else {
-      can(ActionsEnum.Read, User);
-      cannot(ActionsEnum.Create, User).because('Your special message for user');
+      console.log(user);
+      can(ActionsEnum.Read, User, ['orgId']);
+      cannot(ActionsEnum.Create, User).because(
+        'Your special message for user: Only Admins!!!',
+      );
+      cannot(ActionsEnum.Delete, User).because('no chance=)');
     }
 
     return build({
-      detectSubjectType: (subject) =>
-        subject.constructor as ExtractSubjectType<SubjectsType>,
+      detectSubjectType: (item) =>
+        item.constructor as ExtractSubjectType<SubjectsType>,
     });
   }
 }
